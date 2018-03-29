@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyheng.repository.ArticleRepository">
+    <resultMap id="CategoryView" type="CategoryView">
+        <id column="category_id" property="id"/>
+        <result column="category_name" property="name"/>
+    </resultMap>
+    <resultMap id="ArticleDetail" type="ArticleDetail">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="status" property="status"/>
+        <result column="content" property="content"/>
+        <result column="allow_comment" property="allowComment"/>
+        <result column="show_toc" property="showToc"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <association property="category" resultMap="CategoryView">
+        </association>
+    </resultMap>
+
+    <resultMap id="ArticleListData" type="ArticleListData">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="update_time" property="updateTime"/>
+        <association property="category" resultMap="CategoryView">
+        </association>
+    </resultMap>
+    <resultMap id="ArchivesArticle" type="ArchivesArticle">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <sql id="selectArticle">
+        SELECT
+        A.id,
+        A.is_delete,
+        A.content,
+        A.`status`,
+        A.title,
+        A.summary,
+        A.allow_comment ,
+        A.show_toc ,
+        A.create_time ,
+        A.update_time ,
+        C.id category_id,
+        c.category_name
+        FROM article A
+        LEFT JOIN category C ON A.category_id = c.id
+    </sql>
+
+    <select id="getArticleByPage" resultMap="ArticleDetail">
+        <include refid="selectArticle"/>
+        WHERE A.is_delete = 0
+        <if test="_parameter != null">
+            AND A.category_id = #{categoryId}
+        </if>
+    </select>
+    <select id="getPublishedArticleById" resultMap="ArticleDetail">
+        <include refid="selectArticle"/>
+        WHERE A.is_delete = 0
+        AND A.id = #{id}
+        AND A.`status` = '发布'
+    </select>
+
+
+    <select id="getAllDeleteArticle" resultMap="ArticleDetail">
+        <include refid="selectArticle"/>
+        WHERE A.is_delete = 1
+    </select>
+    <select id="findById" resultMap="ArticleDetail">
+        <include refid="selectArticle"/>
+        WHERE A.id = #{id}
+        AND A.is_delete = 0
+    </select>
+    <select id="countArticles" resultType="java.lang.Integer">
+        SELECT COUNT(A.id)
+        FROM article A
+        WHERE A.is_delete = 0
+    </select>
+    <select id="getPushishedArticleByPage" resultMap="ArticleListData">
+        SELECT
+        A.id,
+        A.is_delete,
+        A.`status` ,
+        A.title,
+        A.summary,
+        A.update_time ,
+        C.id category_id,
+        c.category_name
+        FROM article A
+        JOIN category C ON A.category_id = c.id
+        AND A.`status` = '发布'
+        AND A.is_delete = 0
+        <if test="_parameter != null">
+            AND A.category_id = #{categoryId}
+        </if>
+    </select>
+    <select id="getArchives" resultMap="ArchivesArticle">
+        SELECT
+        A.id,
+        A.title,
+        A.create_time,
+        A.update_time
+        FROM article A
+        WHERE A.`status` = '发布'
+        AND A.is_delete = 0
+    </select>
+</mapper>

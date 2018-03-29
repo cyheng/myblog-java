@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cyheng.repository.SinglePageRepository">
+    <select id="getPageByslug" resultType="com.cyheng.model.DO.SinglePage">
+        SELECT
+            id,
+            slug,
+            content,
+            create_time,
+            update_time
+        FROM single_page s
+        WHERE slug = #{slug}
+              AND is_delete = 0
+    </select>
+</mapper>
