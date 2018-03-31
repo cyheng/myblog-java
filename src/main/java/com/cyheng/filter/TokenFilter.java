@@ -15,7 +15,6 @@ import java.io.IOException;
 import static com.cyheng.utils.JwtUtil.extractToken;
 
 public class TokenFilter extends OncePerRequestFilter {
-    private final String PREFIX = "Bearer ";
     private final String HEADER = "Authorization";
 
 
@@ -25,7 +24,7 @@ public class TokenFilter extends OncePerRequestFilter {
             String token = extractToken(request.getHeader(HEADER));
             JwtUtil jwtBean = getJWTBean();
             Claims claimsFromToken = jwtBean.getClaimsFromToken(token);
-            if (claimsFromToken == null || claimsFromToken.getSubject() == null) {
+            if (claimsFromToken == null || claimsFromToken.getId() == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "token 无效");
                 return;
             }

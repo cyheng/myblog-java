@@ -1,9 +1,6 @@
 package com.cyheng.model.DO;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 /**
  * Created by cyheng on 2018/2/24.
@@ -11,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class User extends BaseModel {
 
     private String name;

@@ -1,6 +1,5 @@
 package com.cyheng.utils;
 
-import com.cyheng.model.VO.UserParam;
 import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -47,9 +46,8 @@ public class JwtUtil {
         return claims;
     }
 
-    public String toToken(UserParam user, String id) {
+    public String toToken(String id) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
                 .setId(id)
                 .setExpiration(expireTimeFromNow())
                 .signWith(SIGNATURE_ALGORITHM, secret)

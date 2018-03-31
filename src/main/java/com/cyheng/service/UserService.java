@@ -12,7 +12,6 @@ import com.cyheng.utils.QiNiuUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,17 +25,12 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
-    private String name;
-    private String password;
     private JwtUtil jwtService;
     private UserRepository userRepository;
     private QiNiuUtil qiNiuUtil;
     @Autowired
-    public UserService(@Value("${admin.password}") String password,
-                       @Value("${admin.username}") String name,
-                       JwtUtil jwtService, UserRepository userRepository, QiNiuUtil qiNiuUtil) {
-        this.name = name;
-        this.password = password;
+    public UserService(
+            JwtUtil jwtService, UserRepository userRepository, QiNiuUtil qiNiuUtil) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.qiNiuUtil = qiNiuUtil;
@@ -44,14 +38,16 @@ public class UserService {
 
 
     public String getToken(UserParam user) {
-        String md5 = EncryptUtil.getMD5(user.getPassword());
         User userByName = userRepository.findUserByName(user.getUsername());
-
-        if (!(name.equals(user.getUsername()) && password.equals(md5))) {
+        if (userByName == null) {
+            throw new ResourcesNotFoundException("账号或者密码错误!");
+        }
+        String md5 = EncryptUtil.getMD5(user.getPassword());
+        if (!(userByName.getUsername().equals(user.getUsername()) && userByName.getPassword().equals(md5))) {
             throw new ResourcesNotFoundException("账号或者密码错误！");
         }
 
-        return jwtService.toToken(user, userByName.getId());
+        return jwtService.toToken(userByName.getId());
     }
 
     public UserDetail getUserInfo(String token) {
