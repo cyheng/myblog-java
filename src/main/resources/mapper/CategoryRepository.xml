@@ -2,16 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cyheng.repository.CategoryRepository">
 
-    <resultMap id="category" type="Category">
-        <id column="id" property="id"/>
-    </resultMap>
+
     <sql id="selectCategory">
         SELECT
-            c.id,
-            c.category_name name,
-            c.update_time,
-            c.create_time
-        FROM category c
+        C.id,
+        C.category_name name,
+        C.update_time,
+        C.create_time
+        FROM category C
     </sql>
 
 
@@ -28,20 +26,20 @@
             A.create_time,
             A.update_time,
             C.id category_id,
-            c.category_name
+        C.category_name
         FROM article A
             LEFT JOIN category C ON A.category_id = #{id}
-        WHERE c.is_delete = 0
+        WHERE C.is_delete = 0
               AND A.is_delete = 0
     </select>
     <select id="findCategoryByName" resultType="com.cyheng.model.DO.Category">
         <include refid="selectCategory"/>
-        WHERE c.is_delete = 0
+        WHERE C.is_delete = 0
         AND category_name = #{name}
     </select>
     <select id="getCategoryByPage" resultType="com.cyheng.model.DO.Category">
         <include refid="selectCategory"/>
-        WHERE c.is_delete = 0
+        WHERE C.is_delete = 0
     </select>
     <select id="getArticleNum" resultType="java.lang.Integer">
         SELECT COUNT(A.id)

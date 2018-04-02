@@ -46,9 +46,9 @@
         A.create_time ,
         A.update_time ,
         C.id category_id,
-        c.category_name
+            C.category_name
         FROM article A
-        LEFT JOIN category C ON A.category_id = c.id
+            LEFT JOIN category C ON A.category_id = C.id
     </sql>
 
     <select id="getArticleByPage" resultMap="ArticleDetail">
@@ -89,9 +89,9 @@
         A.summary,
         A.update_time ,
         C.id category_id,
-        c.category_name
+        C.category_name
         FROM article A
-        JOIN category C ON A.category_id = c.id
+        JOIN category C ON A.category_id = C.id
         AND A.`status` = '发布'
         AND A.is_delete = 0
         <if test="_parameter != null">
