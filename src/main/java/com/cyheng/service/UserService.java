@@ -42,7 +42,7 @@ public class UserService {
         if (userByName == null) {
             throw new ResourcesNotFoundException("账号或者密码错误!");
         }
-        String md5 = EncryptUtil.getMD5(user.getPassword());
+        String md5 = EncryptUtil.getSha512(user.getPassword());
         if (!(userByName.getUsername().equals(user.getUsername()) && userByName.getPassword().equals(md5))) {
             throw new ResourcesNotFoundException("账号或者密码错误！");
         }

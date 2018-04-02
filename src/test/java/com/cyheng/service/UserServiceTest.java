@@ -8,13 +8,11 @@ import com.cyheng.utils.EncryptUtil;
 import com.cyheng.utils.JwtUtil;
 import com.cyheng.utils.QiNiuUtil;
 import io.jsonwebtoken.Claims;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -38,16 +36,12 @@ public class UserServiceTest {
     private QiNiuUtil qiNiuUtil;
 
 
-    @Before
-    public void setUp() {
-        ReflectionTestUtils.setField(userService, "name", "admin");
-        ReflectionTestUtils.setField(userService, "password", EncryptUtil.getMD5("admin"));
-    }
+
 
     @Test
     public void getToken() {
         UserParam userParam = new UserParam("admin", "admin");
-        User user = new User();
+        User user = new User("admin", EncryptUtil.getSha512("admin"), "ADMIN");
         user.setId(anyString());
         when(userRepository.findUserByName(userParam.getUsername())).thenReturn(user);
         when(jwtService.toToken(anyString())).thenReturn("test token");

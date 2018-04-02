@@ -9,7 +9,7 @@ import com.google.common.hash.Hashing;
 
 public class EncryptUtil {
 
-    public static String getMD5(String str) {
+    public static String getSha512(String str) {
         return Hashing.sha512().hashString(str, Charsets.UTF_8).toString();
     }
 }
