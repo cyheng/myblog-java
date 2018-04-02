@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RestController("/api/admin/about")
+@RestController
 public class SinglePageController {
 
     private SinglePageService singlePageService;

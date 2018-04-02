@@ -28,12 +28,13 @@ public class UserController {
         String token = JwtUtil.extractToken(value);
         return ResultBean.ok(userService.setAvatar(uploadfile, token));
     }
-    @GetMapping("/user/info")
+
+    @GetMapping("/api/user/info")
     public ResponseEntity getUserInfo(@RequestParam String token) {
         return ResponseEntity.ok(userService.getUserInfo(token));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity login(@Valid @RequestBody UserParam user) {
         Map<String, Object> map = new HashMap<>();
         map.put("token", userService.getToken(user));
