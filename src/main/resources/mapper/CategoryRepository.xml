@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.cyheng.repository.CategoryRepository">
+<mapper namespace="com.doraro.mapper.CategoryRepository">
 
 
     <sql id="selectCategory">
@@ -13,7 +13,7 @@
     </sql>
 
 
-    <select id="getArticles" resultMap="com.cyheng.repository.ArticleRepository.ArticleDetail">
+    <select id="getArticles" resultMap="com.doraro.mapper.ArticleRepository.ArticleDetail">
         SELECT
             A.id,
             A.is_delete,
@@ -32,12 +32,12 @@
         WHERE C.is_delete = 0
               AND A.is_delete = 0
     </select>
-    <select id="findCategoryByName" resultType="com.cyheng.model.DO.Category">
+    <select id="findCategoryByName" resultType="com.doraro.model.entity.Category">
         <include refid="selectCategory"/>
         WHERE C.is_delete = 0
         AND category_name = #{name}
     </select>
-    <select id="getCategoryByPage" resultType="com.cyheng.model.DO.Category">
+    <select id="getCategoryByPage" resultType="com.doraro.model.entity.Category">
         <include refid="selectCategory"/>
         WHERE C.is_delete = 0
     </select>
