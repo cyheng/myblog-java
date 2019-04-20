@@ -1,98 +1,79 @@
 package com.doraro.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.doraro.exception.ApiGlobalException;
-import com.doraro.exception.ResourcesNotFoundException;
 import com.doraro.exception.beans.ApiResponses;
+import com.doraro.exception.beans.ErrorCodeEnum;
+import com.doraro.model.dto.PageView;
 import com.doraro.model.entity.Category;
 import com.doraro.model.param.CategoryParam;
-import com.doraro.mapper.CategoryRepository;
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
+import com.doraro.mapper.CategoryMapper;
+import com.doraro.model.param.PageParam;
+import com.doraro.model.param.ValidateGroups;
+import com.doraro.service.ICategoryService;
+import com.doraro.utils.ApiAssert;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  * Created by cyheng on 2017/11/26.
  */
 @RestController
-@Slf4j
+@Api(tags = {"AdminCategory"}, description = "后台标签管理相关接口")
 public class AdminCategoryController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ICategoryService categoryService;
 
     @GetMapping("/api/admin/categories/numbers")
+    @ApiOperation("获取标签数量")
     public ApiResponses countCategory() {
-        return ApiResponses.ok(categoryRepository.countCategory());
+        return ApiResponses.ok(
+                categoryService.count()
+        );
     }
 
     @GetMapping("/api/admin/category/getArticle")
-    public ResponseEntity getArticles(String id) {
-//        if (Strings.isNullOrEmpty(id)) {
-//            throw new ApiGlobalException("参数id不能为空!");
-//        }
-        Category category = categoryRepository.selectById(id);
-        if (category == null) {
-            throw new ResourcesNotFoundException();
-        }
-        return ResponseEntity.ok(categoryRepository.getArticles(id));
+    @ApiOperation("获取标签id下的所有文章")
+    public ApiResponses getArticles(@RequestParam Long id) {
+        return ApiResponses.ok(categoryService.getArticles(id));
     }
 
     @GetMapping("/api/admin/categories")
-    public ResponseEntity getAllCategories(@RequestParam(value = "page", defaultValue = "0") int pageNum,
-                                           @RequestParam(value = "size", defaultValue = "5") int pageSize) {
-        Page<Category> page = new Page<>(pageNum, pageSize);
-        page.setDesc("update_time");
-        return ResponseEntity.ok(page.setRecords(categoryRepository.getCategoryByPage(page)));
+    @ApiOperation("分页获取标签")
+    public ApiResponses getAllCategories(PageParam pageParam) {
+        return ApiResponses.ok(new PageView(categoryService.getCategoryByPage(pageParam.getPage(), pageParam.getSize())));
     }
 
     @PutMapping("/api/admin/categories")
-    public ApiResponses updateCategory(@Valid @RequestBody CategoryParam form) {
-        Category categoryByName = categoryRepository.findCategoryByName(form.getName());
-//        if (categoryByName != null) {
-//            throw new ApiGlobalException(String.format("name:%s 已存在", form.getName()));
-//        }
-        Category category = Optional.ofNullable(categoryRepository.selectById(form.getId()))
-                .map(item -> {
-                    item.setName(form.getName());
-                    return item;
-                }).orElseThrow(ResourcesNotFoundException::new);
-        categoryRepository.updateById(category);
-        return ApiResponses.ok(category.getId());
+    @ApiOperation("修改标签")
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResponses updateCategory(@Validated(ValidateGroups.Update.class) @RequestBody CategoryParam form) {
+        final Category convert = form.convert(Category.class);
+        return ApiResponses.ok(categoryService.updateById(convert));
     }
 
     @PostMapping("/api/admin/categories")
-    public ResponseEntity createCategory(String name) {
-//        if (Strings.isNullOrEmpty(name)) {
-//            throw new ApiGlobalException("参数name不能为空!");
-//        }
-        Category category = new Category(name);
-        categoryRepository.insert(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(category);
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation("创建标签")
+    public ApiResponses createCategory(@Validated(ValidateGroups.Create.class) @RequestBody CategoryParam form) {
+        Category category = new Category().setCategoryName(form.getCategoryName());
+        return ApiResponses.ok(categoryService.save(category));
     }
 
 
     @DeleteMapping("/api/admin/categories")
-    public ApiResponses deleteCategory(String id) {
-//        if (Strings.isNullOrEmpty(id)) {
-//            throw new ApiGlobalException("参数id不能为空!");
-//        }
-        Category category = categoryRepository.selectById(id);
-        if (category == null) {
-            throw new ResourcesNotFoundException();
-        }
-        Integer articleNum = categoryRepository.getArticleNum(id);
-//        if (articleNum != 0) {
-//            throw new ApiGlobalException("该分类还有文章，无法删除");
-//        }
-        categoryRepository.deleteById(category.getId());
-
-        return ApiResponses.ok(category.getId());
+    @ApiOperation("删除标签")
+    public ApiResponses deleteCategory(@RequestParam Long id) {
+        return ApiResponses.ok(categoryService.deleteCategoryById(id));
     }
+
+
 }

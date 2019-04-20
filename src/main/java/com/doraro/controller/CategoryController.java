@@ -1,10 +1,16 @@
 package com.doraro.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.doraro.exception.ResourcesNotFoundException;
+import com.doraro.exception.beans.ErrorCodeEnum;
+import com.doraro.model.dto.PageView;
 import com.doraro.model.entity.Category;
-import com.doraro.mapper.CategoryRepository;
+import com.doraro.mapper.CategoryMapper;
+import com.doraro.model.param.PageParam;
+import com.doraro.service.ICategoryService;
+import com.doraro.utils.ApiAssert;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,26 +22,26 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/category")
+@Api(tags = "Category", description = "前台分类接口")
 public class CategoryController {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private ICategoryService categoryService;
 
     @ApiOperation(value = "获取单个分类", notes = "根据id获取单个分类")
     @GetMapping(value = "/{id}")
-    public ResponseEntity findCategoryById(@PathVariable String id) {
-        Category category = categoryRepository.selectById(id);
-        if (category == null) {
-            throw new ResourcesNotFoundException("Not Found!");
-        }
+    public ResponseEntity findCategoryById(@PathVariable Long id) {
+        final Category category = categoryService.getById(id);
+        ApiAssert.notNull(ErrorCodeEnum.CATEGORY_NOT_FOUND, category);
         return ResponseEntity.ok(category);
     }
 
     @ApiOperation(value = "获取分类列表", notes = "获取所有分类列表")
     @GetMapping
-    public ResponseEntity getAllCategory(@RequestParam(value = "page", defaultValue = "0") int pageNum,
-                                         @RequestParam(value = "size", defaultValue = "5") int pageSize) {
-        Page<Category> page = new Page<>(pageNum, pageSize);
+    public ResponseEntity getAllCategory(PageParam pageParam) {
+        Page<Category> page = new Page<>(pageParam.getPage(), pageParam.getSize());
         page.setDesc("update_time");
-        return ResponseEntity.ok(page.setRecords(categoryRepository.getCategoryByPage(page)));
+        final IPage<Category> iPage = categoryService.page(page);
+        return ResponseEntity.ok(new PageView(iPage));
+
     }
 }

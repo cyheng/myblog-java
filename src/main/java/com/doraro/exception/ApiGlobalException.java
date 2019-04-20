@@ -3,6 +3,8 @@ package com.doraro.exception;
 import com.doraro.exception.beans.ErrorCode;
 import com.doraro.exception.beans.ErrorCodeEnum;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Created by cyheng on 2018/2/27.
  */
@@ -19,10 +21,14 @@ public class ApiGlobalException extends RuntimeException {
         this.errorCode = errorCodeEnum.convert();
     }
 
+    public ApiGlobalException(String msg) {
+        super(msg);
+        this.errorCode = ErrorCode.builder().msg(msg).httpCode(400).build();
+    }
+
     public ApiGlobalException(ErrorCode errorCode) {
         super(errorCode.getError());
         this.errorCode = errorCode;
-
     }
 
     public ErrorCode getErrorCode() {

@@ -21,7 +21,6 @@ public class SinglePageController {
         this.singlePageService = singlePageService;
     }
 
-
     @GetMapping("/api/admin/about")
     public ApiResponses getAboutPage() {
         return ApiResponses.ok(singlePageService.getAboutPage());

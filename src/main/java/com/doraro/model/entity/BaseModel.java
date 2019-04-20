@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class BaseModel extends Convert {
+public abstract class BaseModel extends Convert {
 
     private Long id;
 

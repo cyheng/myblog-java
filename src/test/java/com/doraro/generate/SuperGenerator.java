@@ -28,7 +28,9 @@ public class SuperGenerator {
      * @return
      */
     protected TemplateConfig getTemplateConfig() {
-        return new TemplateConfig().setXml(null);
+        return new TemplateConfig()
+                .setXml(null)
+                ;
     }
 
     /**
@@ -163,6 +165,7 @@ public class SuperGenerator {
                 .setBaseColumnList(false)// XML columList
                 .setKotlin(false) //是否生成 kotlin 代码
                 .setOpen(false)
+                .setSwagger2(true)
                 .setAuthor("doraro") //作者
                 //自定义文件命名，注意 %s 会自动填充表实体属性！
                 .setEntityName("%s")

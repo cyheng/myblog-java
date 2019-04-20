@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.doraro.mapper.CategoryMapper">
+
+
+    <sql id="selectCategory">
+        SELECT
+        C.id,
+        C.category_name ,
+        C.update_time,
+        C.create_time
+        FROM category C
+    </sql>
+    <insert id="linkCategoryAndArticle" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        category_article (category_id,article_id)
+        VALUES (#{categoryId},#{articleId})
+    </insert>
+
+    <select id="findCategoryByName" resultType="com.doraro.model.entity.Category">
+        <include refid="selectCategory"/>
+        WHERE category_name = #{name}
+    </select>
+
+    <select id="getArticleNum" resultType="java.lang.Integer">
+        SELECT COUNT(A.id)
+        FROM article A,category C,category_article CA
+        WHERE CA.category_id = #{categoryId}
+        AND CA.article_id = A.id
+        AND CA.category_id = C.id
+              AND A.`status` != 2
+    </select>
+
+    <select id="getArticles" resultMap="com.doraro.mapper.ArticleMapper.ArticleDetail">
+        SELECT ca.article_id as id,
+         a.create_time, a.update_time,
+         ca.category_id,  c.category_name,
+         content,
+          title,
+         summary,
+         allow_comment,
+         show_toc,
+          status
+        FROM category_article ca,category c,article a
+        WHERE ca.category_id = c.id
+        AND ca.article_id = a.id
+        AND a.id = #{articleId}
+    </select>
+    <select id="findCategoriesByArticleId" resultType="com.doraro.model.entity.Category">
+        select c.id, c.create_time, c.update_time, c.category_name
+        from category c
+        inner join category_article ca
+        on ca.category_id = c.id
+        inner join  article a
+        on a.id = ca.article_id
+        where a.id = #{articleId}
+    </select>
+</mapper>

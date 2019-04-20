@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doraro.mapper.SysResourceMapper">
+
+    <select id="getPermByRoleIds" resultType="java.lang.String">
+        SELECT DISTINCT sr.perm
+        FROM sys_role sro
+        LEFT JOIN sys_role_menu srm ON srm.role_id = sro.id
+        LEFT JOIN sys_menu sm ON sm.id = srm.menu_id
+        LEFT JOIN sys_resource sr ON sr.id = sm.res_id
+        WHERE sro.id IN
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

@@ -42,30 +42,30 @@ public class ApiResponses implements Serializable {
     }
 
 
-    /**
-     * 失败返回
-     *
-     * @param errorCode 异常枚举
-     * @param exception 异常信息
-     */
-    public static ApiResponses failure(ErrorCodeEnum errorCode, String exception) {
-        return failure(errorCode.convert(), null, exception);
-    }
-
-    public static ApiResponses failure(ErrorCode errorCode, String exception) {
-        return failure(errorCode, null, exception);
-    }
-
-
-    private static ApiResponses failure(ErrorCode errorCode, String message, String exception) {
+    private static ApiResponses buildFailure(ErrorCode errorCode, String message) {
         return FailResponse.builder()
                 .error(errorCode.getError())
                 .msg(message)
-                .exception(exception)
                 .time(LocalDateTime.now())
-                .status(errorCode.getHttpCode())
+                .code(errorCode.getHttpCode())
                 .build();
     }
 
 
+    public static ApiResponses failure(ErrorCodeEnum errorCode) {
+        return failure(errorCode.convert());
+    }
+
+    public static ApiResponses failure(String msg) {
+        return failure(400, msg);
+    }
+
+    public static ApiResponses failure(int code, String msg) {
+        final ErrorCode errorCode = ErrorCode.builder().msg(msg).httpCode(code).build();
+        return buildFailure(errorCode, msg);
+    }
+
+    public static ApiResponses failure(ErrorCode badRequest) {
+        return buildFailure(badRequest, badRequest.getMsg());
+    }
 }

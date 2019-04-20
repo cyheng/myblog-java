@@ -14,7 +14,6 @@ public class ArticleParamTest {
         final ArticleParam articleParam = new ArticleParam();
         articleParam.setTitle("test1");
         articleParam.setContent("this is content");
-        articleParam.setCategoryId(IdUtil.fastUUID().toString());
         articleParam.setSummary("this is summary");
         articleParam.setPublished(true);
         articleParam.setShowToc(true);

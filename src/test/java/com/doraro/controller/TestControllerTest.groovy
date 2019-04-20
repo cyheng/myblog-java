@@ -13,12 +13,12 @@ class TestControllerTest extends SuperMockMvcSetup {
         def res = Get(url)
         then:
         res.status == 200
-        def content = res.contentAsJson
+        def content = res.result
         content != null
-        content."content" == "this is content"
+        content.content == "this is content"
     }
 
-    @Unroll("Check #id matches #expectedResult")
+    @Unroll("testGetWithArg,Check id:#id matches result:#expectedResult")
     def testGetWithArg() {
         given:
         def url = "/test2"
@@ -26,13 +26,13 @@ class TestControllerTest extends SuperMockMvcSetup {
         def res = Get(url, ['id': id])
         then:
         res.status == 200
-        def content = res.contentAsJson
+        def content = res.result
         content != null
-        content."categoryId" == expectedResult
+        content.id == expectedResult
         where:
         id | expectedResult
-        1  | '1'
-        3  | '3'
+        1  | 1
+        3  | 3
     }
 
     def testGetWithExp() {
@@ -42,32 +42,40 @@ class TestControllerTest extends SuperMockMvcSetup {
         def res = Get(url, ['id1': 1])
         then:
         res.status != 200
-        def content = res.contentAsJson
-        content != null
-        content."message" == "id 不能为空"
+        res.result.error == "BAD_REQUEST"
 
     }
 
-    @Unroll("Check #Pid ,#Pname matches #id, #name")
+    @Unroll("Check id:#Pid ,name:#Pname matches #id, #categoryName")
     def testPostWithJson() {
         given:
         def url = "/test3"
         def param = JsonOutput.toJson([
-                "id"  : Pid,
-                "name": Pname
+                "id"          : Pid,
+                "categoryName": Pname
         ])
         when:
         def res = Post(url, param)
         then:
         res.status == 200
-        def content = res.contentAsJson
+        def content = res.result
         content != null
-        content."id" == id
-        content."name" == name
+        content.id == id
+        content.name == categoryName
         where:
-        Pid | Pname   | id | name
+        Pid | Pname   | id | categoryName
         1   | "test1" | 1  | "test1"
         3   | "test2" | 3  | "test2"
     }
 
+    def testJsonValueEnum() {
+        given:
+        def url = "/test5"
+        when:
+        def res = Get(url)
+        then:
+        res.status == 200
+        res.prettyPrint()
+
+    }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doraro.mapper.SysMenuMapper">
+
+
+    <select id="getMenuByPerm" resultType="com.doraro.model.entity.SysMenu">
+        select sm.id, sm.parent_id, sm.menu_name,
+        sm.menu_type, sm.icon, sm.create_uid, sm.update_uid, sm.sort_order, sm.res_id
+        from sys_resource sr
+        left join sys_menu sm on sm.res_id = sr.id
+        in
+        <foreach collection="perm" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

@@ -4,6 +4,9 @@ import com.doraro.DoraroBlogApplication
 import com.vip.vjtools.vjkit.base.ObjectUtil
 import com.vip.vjtools.vjkit.mapper.JsonMapper
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import groovy.json.StringEscapeUtils
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -91,13 +94,25 @@ abstract class SuperMockMvcSetup extends Specification {
     private class Response {
         @Delegate
         private MockHttpServletResponse response
-
+        private JsonSlurper jsonSlurper = new JsonSlurper()
         Response(MockHttpServletResponse response) {
             this.response = response
         }
 
-        def getContentAsJson() {
-            return JsonMapper.INSTANCE.fromJson(response.contentAsString, HashMap.class)
+        def getResult() {
+
+            if (StringUtils.isBlank(response.contentAsString)) {
+                return null
+            }
+            return jsonSlurper.parseText(response.contentAsString)
+        }
+
+        void prettyPrint() {
+            if (StringUtils.isNotBlank(response.errorMessage)) {
+                println(errorMessage)
+            }
+            def str = JsonOutput.prettyPrint(response.contentAsString)
+            println(StringEscapeUtils.unescapeJava(str))
         }
     }
 }

@@ -32,7 +32,7 @@ public class MysqlGenerator extends SuperGenerator {
 
 
     public static final String OUTPUT_DIR = getProjectJavaPath();
-    static final String PACKAGE_BASE_NAME = "com.doraro";
+    static final String PACKAGE_BASE_NAME = "com.doraro.gen";
     static final String MYSQL5_DRIVER = "com.mysql.jdbc.Driver";
     static final String PASSWORD = "root";
     static final String USERNAME = "root";
@@ -52,7 +52,7 @@ public class MysqlGenerator extends SuperGenerator {
 
     public static void main(String[] args) {
         final MysqlGenerator mysqlGenerator = new MysqlGenerator();
-        mysqlGenerator.generator("comment_user");
+        mysqlGenerator.generator("sys_role_menu");
     }
 
 }

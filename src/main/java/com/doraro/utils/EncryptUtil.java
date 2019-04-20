@@ -12,4 +12,8 @@ public class EncryptUtil {
     public static String getSha512(String str) {
         return Hashing.sha512().hashString(str, Charsets.UTF_8).toString();
     }
+
+    public static String md5(String str) {
+        return Hashing.md5().hashString(str, Charsets.UTF_8).toString();
+    }
 }

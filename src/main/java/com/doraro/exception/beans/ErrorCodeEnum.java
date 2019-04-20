@@ -23,6 +23,10 @@ public enum ErrorCodeEnum {
      */
     FORBIDDEN(HttpServletResponse.SC_FORBIDDEN, "无权查看"),
     /**
+     * 403
+     */
+    FORBIDDEN_EDIT(HttpServletResponse.SC_FORBIDDEN, "无权修改"),
+    /**
      * 404
      */
     NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "未找到该路径"),
@@ -65,6 +69,10 @@ public enum ErrorCodeEnum {
      */
     USERNAME_OR_PASSWORD_IS_WRONG(HttpServletResponse.SC_BAD_REQUEST, "用户名密码错误"),
     /**
+     * 用户名密码错误
+     */
+    CAPTCHA_IS_WRONG(HttpServletResponse.SC_BAD_REQUEST, "验证码错误"),
+    /**
      * 用户被禁用
      */
     USER_IS_DISABLED(HttpServletResponse.SC_NOT_ACCEPTABLE, "用户被禁用"),
@@ -95,7 +103,15 @@ public enum ErrorCodeEnum {
     /**
      * 七牛上传失败
      */
-    FILE_UPLOAD_FAIL(HttpStatus.UNPROCESSABLE_ENTITY.value(), "上传失败");
+    FILE_UPLOAD_FAIL(HttpStatus.UNPROCESSABLE_ENTITY.value(), "上传失败"),
+
+    ARTICLE_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "未找到该文章"),
+
+    CATEGORY_NOT_FOUND(HttpServletResponse.SC_NOT_FOUND, "未找到该分类"),
+
+    ROLE_ALREADY_EXISTS(HttpServletResponse.SC_BAD_REQUEST, "用户名已存在"),
+    CATEGORY_HAS_ARTICLE(HttpServletResponse.SC_BAD_REQUEST, "该分类还有文章，无法删除");
+
 
     private final int httpCode;
     private final String msg;

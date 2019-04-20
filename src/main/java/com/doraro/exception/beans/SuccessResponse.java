@@ -1,5 +1,6 @@
 package com.doraro.exception.beans;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

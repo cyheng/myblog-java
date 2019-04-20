@@ -1,13 +1,18 @@
 package com.doraro.controller;
 
-import com.doraro.exception.ApiGlobalException;
 import com.doraro.exception.beans.ApiResponses;
 import com.doraro.model.entity.Article;
 import com.doraro.model.entity.Category;
+import com.doraro.model.enums.ArticleStatusEnum;
+import com.doraro.model.enums.StatusEnum;
 import com.doraro.model.param.ArticleParam;
 import com.doraro.model.param.CategoryParam;
-import com.doraro.model.param.TestParam;
-import com.vip.vjtools.vjkit.id.IdUtil;
+import com.doraro.model.param.Test4Param;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +22,14 @@ import javax.validation.Valid;
 @RestController
 public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
-    @GetMapping("/test")
+
+    @GetMapping("/api/admin/test")
+    @ApiOperation("test")
+    @RequiresRoles("a")
     public Article test() {
         final ArticleParam articleParam = new ArticleParam();
         articleParam.setTitle("test1");
         articleParam.setContent("this is content");
-        articleParam.setCategoryId(IdUtil.fastUUID().toString());
         articleParam.setSummary("this is summary");
         articleParam.setPublished(true);
         articleParam.setShowToc(true);
@@ -31,17 +38,17 @@ public class TestController {
     }
 
     @GetMapping("/test2")
-    public Article test2(@RequestParam Integer id) {
-
+    public Article test2(@RequestParam Long id) {
         final ArticleParam articleParam = new ArticleParam();
         articleParam.setTitle("test1");
         articleParam.setContent("this is content");
-        articleParam.setCategoryId(id.toString());
         articleParam.setSummary("this is summary");
         articleParam.setPublished(true);
         articleParam.setShowToc(true);
         articleParam.setAllowComment(true);
-        return articleParam.convert(Article.class);
+        final Article convert = articleParam.convert(Article.class);
+        convert.setId(id);
+        return convert;
     }
 
     @PostMapping("/test3")
@@ -50,14 +57,10 @@ public class TestController {
         return param.convert(Category.class);
     }
 
-    @PostMapping("/test4")
-    public ApiResponses test4(@Valid @RequestBody TestParam param) {
-        logger.info("{}", param);
-        return ApiResponses.ok();
-    }
 
-    @PostMapping("/test5")
+    @GetMapping("/test5")
+    @ApiOperation("enum序列化测试")
     public ApiResponses test5() {
-        return new ApiResponses();
+        return ApiResponses.ok();
     }
 }

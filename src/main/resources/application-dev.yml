@@ -1,17 +1,16 @@
 server:
-  port: 8080
+  port: 8088
 
 qiniu:
-  accessKey:
-  secretKey:
-  bucket:
-  domain:
+  accessKey: test
+  secretKey: test
+  bucket: blog-image
+  domain: test
 
-
-
-jwt:
-  secret: test
-  sessionTime: 84000
+#生产环境需要通过环境变量指定
+jasypt:
+  encryptor:
+    password: dev
 
 
 spring:
@@ -24,8 +23,8 @@ spring:
       enabled: true
   datasource:
   #数据库设置
-    username: root
-    password: root
+    username: ENC(f2L/2lKPxuXxtXjebtgwBw==)
+    password: ENC(f2L/2lKPxuXxtXjebtgwBw==)
     url: jdbc:mysql://localhost:3306/doraro_blog?useSSL=false&characterEncoding=utf8
     type: com.alibaba.druid.pool.DruidDataSource
 
@@ -58,6 +57,8 @@ spring:
         allow: 127.0.0.1
         login-username:
         login-password:
+  aop:
+    proxy-target-class: true
 
 
 mybatis-plus:
@@ -69,6 +70,7 @@ mybatis-plus:
       db-config:
         field-strategy: not_empty
         db-type: mysql
-        id-type: uuid
+        id-type: id_worker
+    type-enums-package: com.doraro.model.enums
 
 

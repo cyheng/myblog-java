@@ -55,7 +55,7 @@ public class UserLike extends BaseModel {
 
     public static final String USER_ID = "user_id";
 
-    public static final String STATUS = "status";
+    public static final String STATUS = "code";
 
     public static final String CREATE_TIME = "create_time";
 

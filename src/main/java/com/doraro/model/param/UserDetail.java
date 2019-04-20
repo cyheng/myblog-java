@@ -1,16 +1,19 @@
 package com.doraro.model.param;
 
 import com.doraro.model.Convert;
+import com.doraro.model.entity.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+import java.util.List;
+
 @Data
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class UserDetail extends Convert {
+    private Long id;
     private String name;
-    @NonNull
-    private String role;
-    private String introduction;
+    private List<String> roles;
     private String avatar;
 }
